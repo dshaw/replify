@@ -1,0 +1,32 @@
+{
+  "name": "replify",
+  "version": "1.0.0",
+  "description": "Easily add a REPL to your Node.js app.",
+  "keywords": [
+    "repl",
+    "observability"
+  ],
+  "author": "Daniel D. Shaw <dshaw@dshaw.com> (http://dshaw.com)",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dshaw/replify.git"
+  },
+  "bugs": {
+    "url": "http://github.com/dshaw/replify/issues"
+  },
+  "license": "MIT",
+  "main": "replify.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "directories": {
+    "examples": "examples"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tap": "~0.3.1"
+  },
+  "engines": {
+    "node": ">= 0.6.0"
+  }
+}
