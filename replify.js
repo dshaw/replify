@@ -7,6 +7,7 @@
 var fs = require('fs')
   , net = require('net')
   , repl = require('repl')
+  , logger = console
 
 module.exports = function replify (options, app, ctx) {
   options = (options && options.name) ? options : { name: options }
