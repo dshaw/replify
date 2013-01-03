@@ -17,10 +17,11 @@
   "license": "MIT",
   "main": "replify.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/tap test/*.js"
   },
   "directories": {
-    "examples": "examples"
+    "examples": "examples",
+    "test": "test"
   },
   "dependencies": {},
   "devDependencies": {
