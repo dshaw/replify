@@ -22,19 +22,49 @@ Advanced options.
 
     replify({ name: 'realtime-101', path: '/dshaw/repl' }, app, { 'other_context': io })
 
-## Options
+## replify(options, app, [contexts])
 
-`name` [String] - Name for the REPL domain socket. The REPL will be exposed as `/tmp/repl/{name}.sock`
+### `options`
 
-`path` [String] - Default: **/tmp/repl**. The REPL will be located at `{path}/{name}.sock`
+`name` or `options` object.
 
-`logger` [Object] - Default: **console**.
+- `name` [String] - Name for the REPL domain socket. The REPL will be exposed as `/tmp/repl/{name}.sock`
+- `path` [String] - Default: **/tmp/repl**. The REPL will be located at `{path}/{name}.sock`
+- `logger` [Object] - Default: **console**.
+
+### `app`
+
+Primary context. Exposed as:
+
+    realtime-101> app
+
+### `contexts`
+
+Additional contexts exposed under the name of the key.
+
+    replify('chat-01', app, { 'io': io })
+
+## Connect to the REPL
+
+### NETCAT (nc)
+
+    $ nc -U /tmp/repl/realtime-101.sock
+
+### SOCAT
+
+    $ socat READLINE /tmp/repl/realtime-101.sock
+
+### repl-client (rc)
+
+Node repl client with history scrollback and tab completion.
+
+    $ rc /tmp/repl/realtime-101.sock
 
 ## License
 
 (The MIT License)
 
-Copyright (c) 2012 Daniel D. Shaw, http://dshaw.com
+Copyright (c) 2012-2013 Daniel D. Shaw, http://dshaw.com
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
