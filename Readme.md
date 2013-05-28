@@ -13,15 +13,17 @@ Easily add a REPL to your Node.js app.
 	
 ## Usage
 
-    var replify = require('replify')
-      , app = require('http').createServer()
+```js
+var replify = require('replify')
+  , app = require('http').createServer()
 
-    replify('realtime-101', app)
+replify('realtime-101', app)
+```
 
 Advanced options.    
-
-    replify({ name: 'realtime-101', path: '/dshaw/repl' }, app, { 'other_context': io })
-
+```js
+replify({ name: 'realtime-101', path: '/dshaw/repl' }, app, { 'other_context': io })
+```
 ## replify(options, app, [contexts])
 
 ### `options`
@@ -41,9 +43,9 @@ Primary context. Exposed as:
 ### `contexts`
 
 Additional contexts exposed under the name of the key.
-
-    replify('chat-01', app, { 'io': io })
-
+```js
+replify('chat-01', app, { 'io': io })
+```
 ## Connect to the REPL
 
 ### NETCAT (nc)
