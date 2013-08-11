@@ -39,7 +39,7 @@ module.exports = function replify (options, app, ctx) {
         socket.columns = 132 // Set screen width for autocomplete. You can modify this locally in your repl.
 
         if (fs.exists) { // if `fs.exists` exists, then it's node v0.8
-          r = repl.start(repl_opt)
+          r = options.startRepl ? options.startRepl(repl_opt) : repl.start(repl_opt)
           r.on('exit', function () {
             socket.end()
           })
