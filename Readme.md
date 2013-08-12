@@ -5,11 +5,11 @@ Easily add a REPL to your Node.js app.
 
 ## Status
 
-![Travis Build Status](https://secure.travis-ci.org/dshaw/replify.png)
+[![Travis Build Status](https://secure.travis-ci.org/dshaw/replify.png)](http://travis-ci.org/dshaw/replify)
 
 ## Install
 
-	npm install replify
+    npm install replify
 	
 ## Usage
 
@@ -20,19 +20,25 @@ var replify = require('replify')
 replify('realtime-101', app)
 ```
 
-Advanced options.    
+Advanced options.
+
 ```js
 replify({ name: 'realtime-101', path: '/dshaw/repl' }, app, { 'other_context': io })
 ```
+
 ## replify(options, app, [contexts])
 
 ### `options`
 
 `name` or `options` object.
 
-- `name` [String] - Name for the REPL domain socket. The REPL will be exposed as `/tmp/repl/{name}.sock`
-- `path` [String] - Default: **/tmp/repl**. The REPL will be located at `{path}/{name}.sock`
+- `name` [String] - Name for the REPL domain socket. Default: **replify**. You are going to want to assign a value for this. **Note:** Due to the fact that Node no longer cleans up domain socket files behind itself, `replify` automatically paves over the existing file when it starts.
+- `path` [String] - Default: **/tmp/repl**. The REPL will be located at `{path}/{name}{extension}`.
+- `extension` [String] - Default: **.sock**.
 - `logger` [Object] - Default: **console**.
+- `start` [Function] - Default: **require('repl').start**. Useful for custom repls like [replpad](https://github.com/thlorenz/replpad).
+- `app` [Object] - Alternative to using the `app` parameter.
+- `contexts` [Object] - Alternative to using the `contexts` parameter.
 
 ### `app`
 
@@ -43,9 +49,11 @@ Primary context. Exposed as:
 ### `contexts`
 
 Additional contexts exposed under the name of the key.
+
 ```js
 replify('chat-01', app, { 'io': io })
 ```
+
 ## Connect to the REPL
 
 ### NETCAT (nc)
