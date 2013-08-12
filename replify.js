@@ -38,7 +38,7 @@ module.exports = function replify (options, app, contexts) {
       return logger.error('error making repl directory: ' + replDir, err)
     }
 
-    fs.unlink(replPath, function () {
+    fs.unlink(options.replPath, function () {
       // NOTE: Intentionally not listening for any errors.
 
       var replServer = net.createServer()
@@ -98,7 +98,7 @@ module.exports = function replify (options, app, contexts) {
         logger.error('repl server error', err)
       })
 
-      replServer.listen(replPath)
+      replServer.listen(options.replPath)
     })
   })
 }
