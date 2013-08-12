@@ -6,7 +6,11 @@
     "repl",
     "observability"
   ],
-  "author": "Daniel D. Shaw <dshaw@dshaw.com> (http://dshaw.com)",
+  "author": {
+    "name": "Daniel D. Shaw",
+    "email": "dshaw@dshaw.com",
+    "url": "http://dshaw.com"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/dshaw/replify.git"
