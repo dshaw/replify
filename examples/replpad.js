@@ -1,4 +1,6 @@
-var replpad;
+var replify = require('../')
+  , app = require('http').createServer()
+  , replpad
 
 try {
   replpad = require('replpad');
@@ -7,7 +9,15 @@ try {
   process.exit(1)
 }
 
-var replify = require('../')
-  , app = require('http').createServer()
+replify({ name: 'replpad-101', start: replpad }, app)
 
-replify({ name: 'replpad-101', startRepl: replpad }, app)
+app.on('request', function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'})
+  res.end('Hello, replpad!\n')
+})
+
+app.on('listening', function () {
+  console.log('listening')
+})
+
+app.listen(8080)
