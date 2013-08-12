@@ -1,6 +1,6 @@
 /*!
  * replify
- * Copyright(c) 2012 Daniel D. Shaw <dshaw@dshaw.com>
+ * Copyright(c) 2012-2013 Daniel D. Shaw, http://dshaw.com
  * MIT Licensed
  */
 
