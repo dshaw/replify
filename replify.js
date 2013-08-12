@@ -29,13 +29,6 @@ module.exports = function replify (options, app, contexts) {
   options.start     || (options.start = repl.start)
 
   options.replPath = options.path + '/' + options.name + options.extension
-  options.replOptions = {
-      prompt: options.name + '> '
-    , input: socket
-    , output: socket
-    , terminal: true
-    , useGlobal: false
-  }
 
   var logger = options.logger
 
@@ -52,6 +45,13 @@ module.exports = function replify (options, app, contexts) {
 
       replServer.on('connection', function onRequest(socket) {
         var rep = null
+          , replOptions = {
+                prompt: options.name + '> '
+              , input: socket
+              , output: socket
+              , terminal: true
+              , useGlobal: false
+            }
 
         // Set screen width. Especially useful for autocomplete.
         // Since we expose the socket context, we can view
@@ -62,11 +62,11 @@ module.exports = function replify (options, app, contexts) {
         if (typeof fs.exists === 'undefined') { // We're in node v0.6. Start legacy repl.
 
           logger.warn('starting legacy repl')
-          rep = repl.start(options.replOptions.prompt, socket)
+          rep = repl.start(replOptions.prompt, socket)
 
         } else {
 
-          rep = options.start(options.replOptions)
+          rep = options.start(replOptions)
           rep.on('exit', socket.end)
           rep.on('error', function (err) {
             logger.error('repl error', err)
