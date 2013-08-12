@@ -1,4 +1,12 @@
 
+1.1.0 / 2013-08-12
+==================
+
+  * Add js formatting to Readme code blocks. (@timoxley)
+  * Add support for custom REPL `start` functions to support `replpad`, et al. (@thlorenz)
+  * Clean-up and organize options.
+  * Consistent formatting and variable naming.
+
 1.0.2 / 2013-01-03
 ==================
 
