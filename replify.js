@@ -4,69 +4,101 @@
  * MIT Licensed
  */
 
+/**
+ * Module dependencies
+ */
+
 var fs = require('fs')
   , net = require('net')
   , repl = require('repl')
-  , logger = console
 
-module.exports = function replify (options, app, ctx) {
+/**
+ * Exports - replify
+ */
+
+module.exports = function replify (options, app, contexts) {
   options = (options && options.name) ? options : { name: options }
 
-  var name = options.name
-    , repl_dir = (options.path) || '/tmp/repl'
-    , repl_path = repl_dir + '/' + name + '.sock'
+  options.app       || (options.app = app)
+  options.columns   || (options.columns = 132)
+  options.contexts  || (options.contexts = (typeof contexts === 'object') ? contexts : {})
+  options.extension || (options.extension = '.sock')
+  options.logger    || (options.logger = console)
+  options.name      || (options.name = 'replify')
+  options.path      || (options.path = '/tmp/repl')
+  options.start     || (options.start = repl.start)
 
-  if (typeof ctx !== 'object') {
-    ctx = {}
+  options.replPath = options.path + '/' + options.name + options.extension
+  options.replOptions = {
+      prompt: options.name + '> '
+    , input: socket
+    , output: socket
+    , terminal: true
+    , useGlobal: false
   }
 
-  fs.mkdir(repl_dir, function (err) {
+  var logger = options.logger
+
+
+  fs.mkdir(options.path, function (err) {
     if (err && err.code !== 'EEXIST') {
-      return logger.error('error making repl directory', err)
+      return logger.error('error making repl directory: ' + replDir, err)
     }
 
-    fs.unlink(repl_path, function () { // intentionally not listening for the error.
-      var repl_server = net.createServer(function repl_onrequest(socket) {
-        var repl_opt = {
-            prompt: name + '> ',
-            input: socket,
-            output: socket,
-            terminal: true,
-            useGlobal: false
-          },
-          r = null
+    fs.unlink(replPath, function () {
+      // NOTE: Intentionally not listening for any errors.
 
-        socket.columns = 132 // Set screen width for autocomplete. You can modify this locally in your repl.
+      var replServer = net.createServer()
 
-        if (fs.exists) { // if `fs.exists` exists, then it's node v0.8
-          r = options.startRepl ? options.startRepl(repl_opt) : repl.start(repl_opt)
-          r.on('exit', function () {
-            socket.end()
-          })
-          r.on('error', function (err) {
+      replServer.on('connection', function onRequest(socket) {
+        var rep = null
+
+        // Set screen width. Especially useful for autocomplete.
+        // Since we expose the socket context, we can view
+        // You can modify this locally in your repl with `socket.columns`.
+        socket.columns = options.columns
+
+        // start the repl instance
+        if (typeof fs.exists === 'undefined') { // We're in node v0.6. Start legacy repl.
+
+          logger.warn('starting legacy repl')
+          rep = repl.start(options.replOptions.prompt, socket)
+
+        } else {
+
+          rep = options.start(options.replOptions)
+          rep.on('exit', socket.end)
+          rep.on('error', function (err) {
             logger.error('repl error', err)
           })
-        } else {
-          r = repl.start(repl_opt.prompt, socket)
+
         }
 
-        r.context.socket = socket
-        if (app) {
-          r.context.app = app
+        // expose the socket itself to the repl
+        rep.context.replify = options
+
+        // expose the socket itself to the repl
+        rep.context.socket = socket
+
+        if (options.app) {
+          rep.context.app = options.app
         }
 
-        Object.keys(ctx).forEach(function (key) {
-          // don't pave
-          if (!r.context[key]) {
-            r.context[key] = ctx[key]
+        Object.keys(options.contexts).forEach(function (key) {
+          if (rep.context[key]) {
+            // don't pave over existing contexts
+            logger.warn('unable to register context: ' + key)
+          } else {
+            rep.context[key] = ctx[key]
           }
         })
-      }).listen(repl_path)
+      })
 
-      repl_server.on('error', function (err) {
+      replServer.on('error', function (err) {
         logger.error('repl server error', err)
       })
+
+      replServer.listen(replPath)
     })
   })
-
 }
