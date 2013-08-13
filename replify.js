@@ -89,7 +89,7 @@ module.exports = function replify (options, app, contexts) {
             // don't pave over existing contexts
             logger.warn('unable to register context: ' + key)
           } else {
-            rep.context[key] = ctx[key]
+            rep.context[key] = options.contexts[key]
           }
         })
       })
