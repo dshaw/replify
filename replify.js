@@ -19,14 +19,15 @@ var fs = require('fs')
 module.exports = function replify (options, app, contexts) {
   options = (options && options.name) ? options : { name: options }
 
-  options.app       || (options.app = app)
-  options.columns   || (options.columns = 132)
-  options.contexts  || (options.contexts = (typeof contexts === 'object') ? contexts : {})
-  options.extension || (options.extension = '.sock')
-  options.logger    || (options.logger = console)
-  options.name      || (options.name = 'replify')
-  options.path      || (options.path = '/tmp/repl')
-  options.start     || (options.start = repl.start)
+  options.app                         || (options.app = app)
+  options.columns                     || (options.columns = 132)
+  options.contexts                    || (options.contexts = (typeof contexts === 'object') ? contexts : {})
+  options.extension                   || (options.extension = '.sock')
+  options.logger                      || (options.logger = console)
+  options.name                        || (options.name = 'replify')
+  options.path                        || (options.path = '/tmp/repl')
+  options.start                       || (options.start = repl.start)
+  options.hasOwnProperty('useColors') || (options.useColors = true)
 
   options.replPath = options.path + '/' + options.name + options.extension
 
@@ -51,6 +52,7 @@ module.exports = function replify (options, app, contexts) {
               , output: socket
               , terminal: true
               , useGlobal: false
+              , useColors: options.useColors
             }
 
         // Set screen width. Especially useful for autocomplete.
