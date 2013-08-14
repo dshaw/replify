@@ -1,4 +1,12 @@
 
+1.1.3 / 2013-08-14
+==================
+
+  * Fixed 'ctx not defined'. (@thlorenz)
+  * Expose `useColors` REPL configuration. (@thlorenz)
+  * `socket.end` should be bound to the `socket` object. (@kitcambridge)
+  * `getConnections` was not in v0.8, switch to checking for `listen`.
+
 1.1.2 / 2013-08-12
 ==================
 

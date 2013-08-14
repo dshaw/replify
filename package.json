@@ -1,6 +1,6 @@
 {
   "name": "replify",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Easily add a REPL to your Node.js app.",
   "keywords": [
     "repl",
