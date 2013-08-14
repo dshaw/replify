@@ -69,8 +69,8 @@ test('replify has app in context', function (t) {
     setTimeout(function () {
       var socket = connect('net-test')
       socket.on('connect', function () {
-        sendMsg(socket, 'app.getConnections\n', function (res) {
-          t.similar(res, /app.getConnections\r\n\[Function\]/, 'can access app.domain properties')
+        sendMsg(socket, 'app.listen\n', function (res) {
+          t.similar(res, /app.listen\r\n\[Function\]/, 'can access app.listen property')
           t.end()
         })
       })
