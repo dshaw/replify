@@ -9,7 +9,6 @@ var fs = require('fs')
  * Support
  */
 
-
 function connect(name) {
   return net.connect({ path: '/tmp/repl/' + name + '.sock' })  
 }
@@ -22,7 +21,6 @@ function sendMsg(socket, msg, cb) {
   socket.write(msg);
   socket.end();
 }
-
 
 /**
  * Cleanup
