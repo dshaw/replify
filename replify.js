@@ -69,7 +69,7 @@ module.exports = function replify (options, app, contexts) {
         } else {
 
           rep = options.start(replOptions)
-          rep.on('exit', socket.end)
+          rep.on('exit', socket.end.bind(socket))
           rep.on('error', function (err) {
             logger.error('repl error', err)
           })
