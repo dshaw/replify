@@ -84,7 +84,7 @@ test('replify accepts custom context as last param', function (t) {
   var app = http.createServer()
   t.on('end', app.close.bind(app))
 
-  app.listen(9999, function onlistening () {
+  app.listen(9999, function onListening () {
     setTimeout(function () {
       var socket = connect('net-test')
       socket.on('connect', function () {
@@ -103,7 +103,7 @@ test('replify accepts custom context as options property', function (t) {
   var app = http.createServer()
   t.on('end', app.close.bind(app))
 
-  app.listen(9999, function onlistening () {
+  app.listen(9999, function onListening () {
     setTimeout(function () {
       var socket = connect('net-test')
       socket.on('connect', function () {
@@ -115,4 +115,28 @@ test('replify accepts custom context as options property', function (t) {
     }, 250)
   })
   replify({ name: 'net-test', usecolors: false, contexts: { node: 'up' } }, app)
+})
+
+test('replify exposes net server', function (t) {
+
+  var TcpServer = net.Server
+    , app = http.createServer()
+    , replServer = replify({ name: 'net-test', usecolors: false }, app)
+
+  t.on('end', app.close.bind(app))
+
+  t.isa(replServer, TcpServer, 'returns a TCP server')
+
+  app.listen(9999, function onAppListening () {
+    replServer.on('listening', function onReplServerListening () {
+      replServer.close(function onClose() {
+        var socket = connect('net-test')
+        socket.on('error', function (err) {
+          t.isa(err, Error, 'socket connection should fail')
+          t.equal(err.code, 'ENOENT', 'cannot connect to closed replServer')
+          t.end()
+        })
+      })
+    })
+  })
 })

@@ -32,7 +32,63 @@ module.exports = function replify (options, app, contexts) {
   options.replPath = options.path + '/' + options.name + options.extension
 
   var logger = options.logger
+    , replServer = net.createServer()
 
+  replServer.on('connection', function onRequest(socket) {
+    var rep = null
+        , replOptions = {
+          prompt: options.name + '> '
+          , input: socket
+          , output: socket
+          , terminal: true
+          , useGlobal: false
+          , useColors: options.useColors
+        }
+
+    // Set screen width. Especially useful for autocomplete.
+    // Since we expose the socket context, we can view
+    // You can modify this locally in your repl with `socket.columns`.
+    socket.columns = options.columns
+
+    // start the repl instance
+    if (typeof fs.exists === 'undefined') { // We're in node v0.6. Start legacy repl.
+
+      logger.warn('starting legacy repl')
+      rep = repl.start(replOptions.prompt, socket)
+
+    } else {
+
+      rep = options.start(replOptions)
+      rep.on('exit', socket.end.bind(socket))
+      rep.on('error', function (err) {
+        logger.error('repl error', err)
+      })
+
+    }
+
+    // expose the socket itself to the repl
+    rep.context.replify = options
+
+    // expose the socket itself to the repl
+    rep.context.socket = socket
+
+    if (options.app) {
+      rep.context.app = options.app
+    }
+
+    Object.keys(options.contexts).forEach(function (key) {
+      if (rep.context[key]) {
+        // don't pave over existing contexts
+        logger.warn('unable to register context: ' + key)
+      } else {
+        rep.context[key] = options.contexts[key]
+      }
+    })
+  })
+
+  replServer.on('error', function (err) {
+    logger.error('repl server error', err)
+  })
 
   fs.mkdir(options.path, function (err) {
     if (err && err.code !== 'EEXIST') {
@@ -42,65 +98,9 @@ module.exports = function replify (options, app, contexts) {
     fs.unlink(options.replPath, function () {
       // NOTE: Intentionally not listening for any errors.
 
-      var replServer = net.createServer()
-
-      replServer.on('connection', function onRequest(socket) {
-        var rep = null
-          , replOptions = {
-                prompt: options.name + '> '
-              , input: socket
-              , output: socket
-              , terminal: true
-              , useGlobal: false
-              , useColors: options.useColors
-            }
-
-        // Set screen width. Especially useful for autocomplete.
-        // Since we expose the socket context, we can view
-        // You can modify this locally in your repl with `socket.columns`.
-        socket.columns = options.columns
-
-        // start the repl instance
-        if (typeof fs.exists === 'undefined') { // We're in node v0.6. Start legacy repl.
-
-          logger.warn('starting legacy repl')
-          rep = repl.start(replOptions.prompt, socket)
-
-        } else {
-
-          rep = options.start(replOptions)
-          rep.on('exit', socket.end.bind(socket))
-          rep.on('error', function (err) {
-            logger.error('repl error', err)
-          })
-
-        }
-
-        // expose the socket itself to the repl
-        rep.context.replify = options
-
-        // expose the socket itself to the repl
-        rep.context.socket = socket
-
-        if (options.app) {
-          rep.context.app = options.app
-        }
-
-        Object.keys(options.contexts).forEach(function (key) {
-          if (rep.context[key]) {
-            // don't pave over existing contexts
-            logger.warn('unable to register context: ' + key)
-          } else {
-            rep.context[key] = options.contexts[key]
-          }
-        })
-      })
-
-      replServer.on('error', function (err) {
-        logger.error('repl server error', err)
-      })
-
       replServer.listen(options.replPath)
     })
   })
+
+  return replServer
 }
