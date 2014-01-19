@@ -92,7 +92,7 @@ module.exports = function replify (options, app, contexts) {
 
   fs.mkdir(options.path, function (err) {
     if (err && err.code !== 'EEXIST') {
-      return logger.error('error making repl directory: ' + replDir, err)
+      return logger.error('error making repl directory: ' + options.path, err)
     }
 
     fs.unlink(options.replPath, function () {
