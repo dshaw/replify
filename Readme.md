@@ -66,13 +66,13 @@ replify('realtime-101', app, { 'io': io })
 
 ### repl-client (rc)
 
-Node repl client with history scrollback and tab completion.
+Node repl client with history scrollback and tab completion. Learn more about [`repl-client (rc)`](https://github.com/dshaw/repl-client). Install with `npm install repl-client -g`.
 
     $ rc /tmp/repl/realtime-101.sock
     
 ### Windows
 
-Recommended to use repl-client. Note that Windows pipes don't live on disk, and the path to the socket is not *quite* the same as *nix environemnts.
+Recommended to use `repl-client`. Note that Windows pipes don't live on disk, and the path to the socket is not *quite* the same as *nix environments.
 
     $ rc \\.\pipe\tmp-repl\realtime-101.sock
 
@@ -80,7 +80,7 @@ Recommended to use repl-client. Note that Windows pipes don't live on disk, and 
 
 (The MIT License)
 
-Copyright (c) 2012-2013 Daniel D. Shaw, http://dshaw.com
+Copyright (c) 2012-2014 Daniel D. Shaw, http://dshaw.com
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
