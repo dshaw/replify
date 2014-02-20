@@ -10,11 +10,21 @@
 
 var fs = require('fs')
   , net = require('net')
+  , path = require('path')
   , repl = require('repl')
 
 /**
  * Exports - replify
  */
+function cleanPipeName(str) {
+  if (process.platform === 'win32') {
+    str = str.replace(/^\//, '');
+    str = str.replace(/\//g, '-');
+    return '\\\\.\\pipe\\'+str;
+  } else {
+    return str;
+  }
+}
 
 module.exports = function replify (options, app, contexts) {
   options = (options && options.name) ? options : { name: options }
@@ -29,7 +39,7 @@ module.exports = function replify (options, app, contexts) {
   options.start                       || (options.start = repl.start)
   options.hasOwnProperty('useColors') || (options.useColors = true)
 
-  options.replPath = options.path + '/' + options.name + options.extension
+  options.replPath = cleanPipeName(options.path + path.sep + options.name + options.extension)
 
   var logger = options.logger
     , replServer = net.createServer()
@@ -90,17 +100,24 @@ module.exports = function replify (options, app, contexts) {
     logger.error('repl server error', err)
   })
 
-  fs.mkdir(options.path, function (err) {
-    if (err && err.code !== 'EEXIST') {
-      return logger.error('error making repl directory: ' + replDir, err)
-    }
+  var start = replServer.listen.bind(replServer, options.replPath)
 
-    fs.unlink(options.replPath, function () {
-      // NOTE: Intentionally not listening for any errors.
+  // with windows, pipes are different, so we don't actually need to create
+  // anything and we go ahead and listen right away
+  if (process.platform === 'win32') {
+    start()
+  } else {
+    fs.mkdir(options.path, function (err) {
+      if (err && err.code !== 'EEXIST') {
+        return logger.error('error making repl directory: ' + options.path, err)
+      }
 
-      replServer.listen(options.replPath)
+      fs.unlink(options.replPath, function () {
+        // NOTE: Intentionally not listening for any errors.
+        replServer.listen(options.replPath)
+      })
     })
-  })
+  }
 
   return replServer
 }
