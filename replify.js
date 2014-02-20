@@ -10,6 +10,8 @@
 
 var fs = require('fs')
   , net = require('net')
+  , tmp = require('os').tmpdir()
+  , path = require('path')
   , repl = require('repl')
 
 /**
@@ -25,7 +27,7 @@ module.exports = function replify (options, app, contexts) {
   options.extension                   || (options.extension = '.sock')
   options.logger                      || (options.logger = console)
   options.name                        || (options.name = 'replify')
-  options.path                        || (options.path = '/tmp/repl')
+  options.path                        || (options.path = path.join(tmp, 'repl'))
   options.start                       || (options.start = repl.start)
   options.hasOwnProperty('useColors') || (options.useColors = true)
 
@@ -92,7 +94,7 @@ module.exports = function replify (options, app, contexts) {
 
   fs.mkdir(options.path, function (err) {
     if (err && err.code !== 'EEXIST') {
-      return logger.error('error making repl directory: ' + replDir, err)
+      return logger.error('error making repl directory: ' + options.path, err)
     }
 
     fs.unlink(options.replPath, function () {
