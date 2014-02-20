@@ -51,7 +51,7 @@ Primary context. Exposed as:
 Additional contexts exposed under the name of the key.
 
 ```js
-replify('chat-01', app, { 'io': io })
+replify('realtime-101', app, { 'io': io })
 ```
 
 ## Connect to the REPL
@@ -69,6 +69,12 @@ replify('chat-01', app, { 'io': io })
 Node repl client with history scrollback and tab completion.
 
     $ rc /tmp/repl/realtime-101.sock
+    
+### Windows
+
+Recommended to use repl-client. Note that Windows pipes don't live on disk, and the path to the socket is not *quite* the same as *nix environemnts.
+
+    $ rc \\.\pipe\tmp-repl\realtime-101.sock
 
 ## License
 
