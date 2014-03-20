@@ -55,6 +55,10 @@ module.exports = function replify (options, app, contexts) {
           , useColors: options.useColors
         }
 
+    socket.on('error', function onSocketError() {
+      logger.warn('error while speaking with socket');
+    });
+
     // Set screen width. Especially useful for autocomplete.
     // Since we expose the socket context, we can view
     // You can modify this locally in your repl with `socket.columns`.
