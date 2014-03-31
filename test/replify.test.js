@@ -140,3 +140,29 @@ test('replify exposes net server', function (t) {
     })
   })
 })
+
+test('replify handles socket errors', function (t) {
+  var app = http.createServer()
+  t.on('end', app.close.bind(app))
+
+  app.listen(9999, function onListening () {
+    setTimeout(function () {
+      var socket = connect('net-test')
+      socket.on('connect', function () {
+        process.nextTick(function() {
+          t.doesNotThrow(function() {
+            sendMsg(socket, 'app.listen\n', function (res) {
+              t.similar(res, /app.listen\r\n\[Function\]/, 'can access app.listen property')
+            });
+          });
+
+          socket.destroy();
+          setTimeout(function() {
+            t.end()
+          }, 250)
+        });
+      })
+    }, 250)
+  })
+  replify({ name: 'net-test', useColors: false }, app)
+})
