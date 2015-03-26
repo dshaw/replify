@@ -8,15 +8,21 @@
  * Module dependencies
  */
 
-var fs = require('fs')
-  , net = require('net')
-  , repl = require('repl')
+var fs = require('fs');
+var net = require('net');
+var repl = require('repl');
+var util = require('util');
 
-/**
- * Exports - replify
- */
+var EventEmitter = require('events').EventEmitter;
 
-module.exports = function replify (options, app, contexts) {
+function Replify() {
+
+}
+
+util.inherits( Replify , EventEmitter );
+
+Replify.prototype.init = function init(options, app, contexts) {
+  var self = this;
   options = (options && options.name) ? options : { name: options }
 
   options.app                         || (options.app = app)
@@ -33,6 +39,11 @@ module.exports = function replify (options, app, contexts) {
 
   var logger = options.logger
     , replServer = net.createServer()
+
+  replServer.on('listening', function onListening() {
+    console.log('replserver listening!');
+    self.emit('ready');
+  });
 
   replServer.on('connection', function onRequest(socket) {
     var rep = null
@@ -104,3 +115,9 @@ module.exports = function replify (options, app, contexts) {
 
   return replServer
 }
+
+/**
+ * Exports - replify
+ */
+
+module.exports = Replify;
