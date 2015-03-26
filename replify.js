@@ -10,6 +10,7 @@
 
 var fs = require('fs');
 var net = require('net');
+var path = require('path');
 var repl = require('repl');
 var util = require('util');
 
