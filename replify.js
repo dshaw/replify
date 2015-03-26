@@ -8,14 +8,20 @@
  * Module dependencies
  */
 
-var fs = require('fs')
-  , net = require('net')
-  , path = require('path')
-  , repl = require('repl')
+var fs = require('fs');
+var net = require('net');
+var path = require('path');
+var repl = require('repl');
+var util = require('util');
 
-/**
- * Exports - replify
- */
+var EventEmitter = require('events').EventEmitter;
+
+function Replify() {
+
+}
+
+util.inherits( Replify , EventEmitter );
+
 function cleanPipeName(str) {
   if (process.platform === 'win32') {
     str = str.replace(/^\//, '');
@@ -26,7 +32,8 @@ function cleanPipeName(str) {
   }
 }
 
-module.exports = function replify (options, app, contexts) {
+Replify.prototype.init = function init(options, app, contexts) {
+  var self = this;
   options = (options && options.name) ? options : { name: options }
 
   options.app                         || (options.app = app)
@@ -43,6 +50,10 @@ module.exports = function replify (options, app, contexts) {
 
   var logger = options.logger
     , replServer = net.createServer()
+
+  replServer.on('listening', function onListening() {
+    self.emit('ready');
+  });
 
   replServer.on('connection', function onRequest(socket) {
     var rep = null
@@ -121,3 +132,9 @@ module.exports = function replify (options, app, contexts) {
 
   return replServer
 }
+
+/**
+ * Exports - replify
+ */
+
+module.exports = Replify;
