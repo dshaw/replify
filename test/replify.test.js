@@ -1,7 +1,7 @@
 var fs = require('fs')
   , http = require('http')
   , net = require('net')
-  , replify = require('../')
+  , Replify = require('../')
   , tap = require('tap')
   , test = tap.test
 
@@ -57,7 +57,8 @@ test('replify', function (t) {
     }, 250)
   })
 
-  replify('net-test', app)
+  var replify = new Replify();
+  replify.init('net-test', app)
 })
 
 test('replify has app in context', function (t) {
@@ -76,7 +77,9 @@ test('replify has app in context', function (t) {
       })
     }, 250)
   })
-  replify({ name: 'net-test', useColors: false }, app)
+  
+  var replify = new Replify();
+  replify.init({ name: 'net-test', useColors: false }, app);
 })
 
 test('replify accepts custom context as last param', function (t) {
@@ -95,7 +98,9 @@ test('replify accepts custom context as last param', function (t) {
       })
     }, 250)
   })
-  replify({ name: 'net-test', usecolors: false }, app, { node: 'up' })
+  
+  var replify = new Replify();
+  replify.init({ name: 'net-test', usecolors: false }, app, { node: 'up' })
 })
 
 test('replify accepts custom context as options property', function (t) {
@@ -114,14 +119,16 @@ test('replify accepts custom context as options property', function (t) {
       })
     }, 250)
   })
-  replify({ name: 'net-test', usecolors: false, contexts: { node: 'up' } }, app)
+  var replify = new Replify();
+  replify.init({ name: 'net-test', usecolors: false, contexts: { node: 'up' } }, app)
 })
 
 test('replify exposes net server', function (t) {
 
   var TcpServer = net.Server
     , app = http.createServer()
-    , replServer = replify({ name: 'net-test', usecolors: false }, app)
+    , replify = new Replify()
+    , replServer = replify.init({ name: 'net-test', usecolors: false }, app)
 
   t.on('end', app.close.bind(app))
 
