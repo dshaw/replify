@@ -3,9 +3,9 @@ var replify = require('../')
 
 replify('realtime-101', app)
 
-app.on('request', function (req, res) {
+app.on('request', function onRequest(req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'})
   res.end('Hello, replify!\n')
 })
 
-app.listen(8080)
+app.listen(Number(process.argv[2]) || 8080)

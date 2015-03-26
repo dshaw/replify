@@ -1,4 +1,10 @@
 
+1.2.0 / 2014-02-20
+==================
+
+  * Removed hard coded /tmp in favour of real OS temp. (@remy)
+  * Update docs and examples.
+
 1.1.4 / 2013-08-28
 ==================
 
