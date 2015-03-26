@@ -52,7 +52,6 @@ Replify.prototype.init = function init(options, app, contexts) {
     , replServer = net.createServer()
 
   replServer.on('listening', function onListening() {
-    console.log('replserver listening!');
     self.emit('ready');
   });
 
